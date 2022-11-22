@@ -21,37 +21,45 @@ namespace Shipping.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(CreateShippingOrderDto createShippingOrderDto)
+        public IActionResult CreateOrder([FromBody] CreateShippingOrderDto createShippingOrderDto)
         {
-            
-            var serviceProvider = await _context.ServiceProviders.FindAsync(createShippingOrderDto.CarrierId);
-            if (serviceProvider == null)
+            try
             {
-                return BadRequest("Carrier not found");
+
+                var serviceProvider = _context.ServiceProviders.Find(createShippingOrderDto.CarrierId);
+                if (serviceProvider == null)
+                {
+                    return BadRequest("Carrier not found");
+                }
+
+                var carrierService = _context.CarrierServices.Find(createShippingOrderDto.ShippingServiceId);
+
+                if (carrierService == null || serviceProvider.CarrierId != carrierService.CarrierId)
+                {
+                    return BadRequest("Carrier service not found");
+                }
+
+                var package = new Entities.Package
+                {
+                    ShippingServiceId = carrierService.ShippingServiceId,
+                    Weight = createShippingOrderDto.Weight,
+                    Height = createShippingOrderDto.Height,
+                    Width = createShippingOrderDto.Width,
+                    Length = createShippingOrderDto.Length
+                };
+
+                _context.Packages.Add(package);
+                _context.SaveChangesAsync();
+
+                return Ok("shipment has been placed successfully");
             }
-
-            var carrierService = await _context.CarrierServices.FindAsync(createShippingOrderDto.ShippingServiceId);
-            
-            if (carrierService == null || serviceProvider.CarrierId != carrierService.CarrierId)
+            catch (System.Exception e)
             {
-                return BadRequest("Carrier service not found");
+
+                return BadRequest(e.Message);
             }
-
-            var package = new Entities.Package
-            {
-                ShippingServiceId = carrierService.ShippingServiceId,
-                Weight = createShippingOrderDto.Weight,
-                Height = createShippingOrderDto.Height,
-                Width = createShippingOrderDto.Width,
-                Length = createShippingOrderDto.Length
-            };
-
-            _context.Packages.Add(package);
-            await _context.SaveChangesAsync();
-
-            return Ok("shipment has been placed successfully");
         }
-        
-        
+
+
     }
 }
