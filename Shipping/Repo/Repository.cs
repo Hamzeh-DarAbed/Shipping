@@ -4,7 +4,7 @@ using Shipping.Context;
 
 namespace Shipping.repo
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity,T> : IRepository<TEntity,T> where TEntity :class
     {
         protected readonly ApplicationDbContext _context;
         public Repository(ApplicationDbContext context)
@@ -28,8 +28,9 @@ namespace Shipping.repo
             return _context.Set<TEntity>().Where(predicate);
         }
 
-        public TEntity Get(dynamic id)
+        public TEntity Get(T id)
         {
+            
 
             return _context.Set<TEntity>().Find(id);
 

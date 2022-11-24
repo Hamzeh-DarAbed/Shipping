@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Shipping.Entities;
 using Shipping.repo;
 
-namespace Shipping.FakeRepo
+namespace Shipping.Test.FakeRepo
 {
-    public class ShippingServiceRepoFake:IRepository<ShippingService>
+    public class ShippingServiceRepoFake:IRepository<ShippingService,string>
     {
         private readonly List<ShippingService> _shippingServices;
         public ShippingServiceRepoFake()
@@ -50,7 +50,7 @@ namespace Shipping.FakeRepo
 
         
 
-        public ShippingService Get(dynamic id)
+        public ShippingService Get(string id)
         {
             throw new NotImplementedException();
         }

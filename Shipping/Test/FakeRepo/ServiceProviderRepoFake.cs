@@ -7,14 +7,14 @@ using Shipping.Entities;
 using ServiceProvider = Shipping.Entities.ServiceProvider;
 using System.Linq.Expressions;
 
-namespace Shipping.FakeRepo
+namespace Shipping.Test.FakeRepo
 {
-    public class ServiceProviderRepoFake : IRepository<ServiceProvider>
+    public class ServiceProviderRepoFake : IRepository<ServiceProvider, string>
     {
         private readonly List<ServiceProvider> _serviceProviders;
         public ServiceProviderRepoFake()
         {
-            _serviceProviders= new List<ServiceProvider>(){
+            _serviceProviders = new List<ServiceProvider>(){
                 new ServiceProvider(){
                     CarrierId="fedex"
                 },
@@ -24,7 +24,23 @@ namespace Shipping.FakeRepo
             };
 
         }
+        public ServiceProvider Get(string id)
+        {
+            var serviceProvider = _serviceProviders.FirstOrDefault(x => x.CarrierId == id);
+            serviceProvider.ShippingService = new List<ShippingService>()
+            {
+                new ShippingService()
+                {
+                    ShippingServiceId = "fedexAIR"
+                },
+                new ShippingService()
+                {
+                    ShippingServiceId = "fedexGROUND"
+                }
+            };
+            return serviceProvider;
 
+        }
         public void Add(ServiceProvider entity)
         {
             throw new NotImplementedException();
@@ -40,10 +56,7 @@ namespace Shipping.FakeRepo
             throw new NotImplementedException();
         }
 
-        public ServiceProvider Get(dynamic id)
-        {
-            return _serviceProviders.FirstOrDefault(x => x.CarrierId == id);
-        }
+
 
         public IEnumerable<ServiceProvider> GetAll()
         {

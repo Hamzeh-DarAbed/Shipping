@@ -2,9 +2,9 @@ using System.Linq.Expressions;
 using Shipping.Entities;
 using Shipping.repo;
 
-namespace Shipping.FakeRepo
+namespace Shipping.Test.FakeRepo
 {
-    public class PackageRepoFake : IRepository<Package>
+    public class PackageRepoFake : IRepository<Package,string>
     {
         private readonly List<Package> _packages;
         public PackageRepoFake()
@@ -27,7 +27,7 @@ namespace Shipping.FakeRepo
 
 
 
-        public Package Get(dynamic id)
+        public Package Get(string id)
         {
             throw new NotImplementedException();
         }

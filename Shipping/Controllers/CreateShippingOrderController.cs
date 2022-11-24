@@ -12,20 +12,17 @@ namespace Shipping.Controllers
     public class CreateShippingOrderController : Controller
     {
         
-        private readonly IRepository<ServiceProvider> _shippingOrderRepository;
-        private readonly IRepository<ShippingService> _shippingServiceRepository;
-        private readonly IRepository<Package> _packageRepository;
+        private readonly IRepository<ServiceProvider,string> _shippingOrderRepository;
+        private readonly IRepository<Package,string> _packageRepository;
 
-        public CreateShippingOrderController(IRepository<ServiceProvider> shippingOrderRepository, IRepository<ShippingService> shippingServiceRepository, IRepository<Package> packageRepository)
+        public CreateShippingOrderController(IRepository<ServiceProvider,string> shippingOrderRepository,  IRepository<Package,string> packageRepository)
         {
             _shippingOrderRepository = shippingOrderRepository;
-            _shippingServiceRepository = shippingServiceRepository;
             _packageRepository = packageRepository;
+            
         }
         
         
-
-
         [HttpPost]
         public IActionResult CreateOrder([FromBody] CreateShippingOrderDto createShippingOrderDto)
         {
@@ -38,7 +35,7 @@ namespace Shipping.Controllers
                     return BadRequest("Carrier not found");
                 }
 
-                var carrierService =_shippingServiceRepository.Find(x => x.CarrierId == createShippingOrderDto.CarrierId && x.ShippingServiceId == createShippingOrderDto.ShippingServiceId).FirstOrDefault();
+                var carrierService =serviceProvider.ShippingService.Find(x => x.ShippingServiceId == createShippingOrderDto.ShippingServiceId);
 
                 if (carrierService == null )
                 {

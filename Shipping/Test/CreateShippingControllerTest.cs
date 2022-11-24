@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shipping.Controllers;
 using Shipping.Dto;
 using Shipping.Entities;
-using Shipping.FakeRepo;
+using Shipping.Test.FakeRepo;
 using Shipping.repo;
 using Xunit;
 using ServiceProvider = Shipping.Entities.ServiceProvider;
@@ -15,17 +15,15 @@ namespace Shipping.Test
 {
     public class CreateShippingControllerTest
     {
-        private readonly IRepository<Entities.Package> _packageRepository;
-        private readonly IRepository<ShippingService> _shippingServiceRepository;
-        private readonly IRepository<ServiceProvider> _serviceProviderRepository;
+        private readonly IRepository<Package,string> _packageRepository;
+        private readonly IRepository<ServiceProvider,string> _serviceProviderRepository;
         private readonly CreateShippingOrderController _createShippingController;
         
         public CreateShippingControllerTest()
         {
             _packageRepository = new PackageRepoFake();
             _serviceProviderRepository = new ServiceProviderRepoFake();
-            _shippingServiceRepository = new ShippingServiceRepoFake();
-            _createShippingController = new CreateShippingOrderController(_serviceProviderRepository, _shippingServiceRepository,_packageRepository);
+            _createShippingController = new CreateShippingOrderController(_serviceProviderRepository,_packageRepository);
             
         }
         [Fact]

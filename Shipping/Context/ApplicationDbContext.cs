@@ -29,6 +29,13 @@ namespace Shipping.Context
                 .HasMany(x => x.Packages)
                 .WithOne(x => x.ShippingService)
                 .HasForeignKey(x => x.ShippingServiceId);
+
+            modelBuilder.Entity<Package>()
+                .HasOne(x => x.ShippingService)
+                .WithMany(x => x.Packages)
+                .HasForeignKey(x => x.ShippingServiceId);
+
+                
             
         }
         
