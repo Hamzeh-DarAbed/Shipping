@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shipping.Context;
 using Shipping.repo;
-using Shipping.Repo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +11,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-builder.Services.AddScoped(typeof(IRepository<Shipping.Entities.ServiceProvider, string>), typeof(ServiceProviderRepo));
 
 var app = builder.Build();
 

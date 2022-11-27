@@ -11,33 +11,36 @@ namespace Shipping.Controllers
     [Route("[controller]")]
     public class CreateShippingOrderController : Controller
     {
-        
-        private readonly IRepository<ServiceProvider,string> _shippingOrderRepository;
-        private readonly IRepository<Package,string> _packageRepository;
 
-        public CreateShippingOrderController(IRepository<ServiceProvider,string> shippingOrderRepository,  IRepository<Package,string> packageRepository)
+        private readonly IRepository<ServiceProvider, string> _shippingOrderRepository;
+        private readonly IRepository<Package, string> _packageRepository;
+
+        public CreateShippingOrderController(IRepository<ServiceProvider, string> shippingOrderRepository, IRepository<Package, string> packageRepository)
         {
             _shippingOrderRepository = shippingOrderRepository;
             _packageRepository = packageRepository;
-            
+
         }
-        
-        
+
+
         [HttpPost]
         public IActionResult CreateOrder([FromBody] CreateShippingOrderDto createShippingOrderDto)
         {
             try
             {
 
-                var serviceProvider =_shippingOrderRepository.Get(createShippingOrderDto.CarrierId);
-                 if (serviceProvider == null)
+                var serviceProvider = _shippingOrderRepository.Get(createShippingOrderDto.CarrierId);
+                if (serviceProvider == null)
                 {
                     return BadRequest("Carrier not found");
                 }
 
-                var carrierService =serviceProvider.ShippingService.Find(x => x.ShippingServiceId == createShippingOrderDto.ShippingServiceId);
+                var carrierService = serviceProvider.ShippingService.Find(x => x.ShippingServiceId == createShippingOrderDto.ShippingServiceId);
+                
+                    System.Console.WriteLine(carrierService);
 
-                if (carrierService == null )
+                
+                if (carrierService == null)
                 {
                     return BadRequest("Carrier service not found");
                 }

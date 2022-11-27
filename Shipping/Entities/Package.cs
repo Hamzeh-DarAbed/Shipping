@@ -15,7 +15,7 @@ namespace Shipping.Entities
         public float Width { get; set; }
         public float Length { get; set; }
         public string ShippingServiceId { get; set; }
-        public ShippingService ShippingService { get; set; }
+        public virtual ShippingService ShippingService { get; set; }
 
     }
 }

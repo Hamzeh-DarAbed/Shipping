@@ -11,7 +11,7 @@ namespace Shipping.Entities
         [Key]
         public string CarrierId { get; set; }
         [Required]
-        public List<ShippingService> ShippingService { get; set; }
+        public virtual List<ShippingService> ShippingService { get; set; }
         
     }
 }
