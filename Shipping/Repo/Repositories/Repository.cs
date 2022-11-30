@@ -1,8 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using Shipping.Context;
+﻿using Shipping.Context;
+using Shipping.repo.IRepositories;
 
-namespace Shipping.repo
+namespace Shipping.repo.Repositories
 {
     public class Repository<TEntity,T> : IRepository<TEntity,T> where TEntity :class
     {
@@ -14,18 +13,17 @@ namespace Shipping.repo
         public void Add(TEntity entity)
         {
             _context.Set<TEntity>().Add(entity);
-            _context.SaveChanges();
         }
 
         public void AddRange(IEnumerable<TEntity> entities)
         {
             _context.Set<TEntity>().AddRange(entities);
-            _context.SaveChanges();
         }
 
         public IEnumerable<TEntity> Find(System.Linq.Expressions.Expression<Func<TEntity, bool>> predicate)
         {
-            return _context.Set<TEntity>().Where(predicate);
+            var result = _context.Set<TEntity>().Where(predicate);
+            return result;
         }
 
         public TEntity Get(T id)
@@ -44,19 +42,16 @@ namespace Shipping.repo
         public void Remove(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
-            _context.SaveChanges();
         }
 
         public void RemoveRange(IEnumerable<TEntity> entities)
         {
             _context.Set<TEntity>().RemoveRange(entities);
-            _context.SaveChanges();
         }
 
         public void Update(TEntity entity)
         {
             _context.Set<TEntity>().Update(entity);
-            _context.SaveChanges();
         }
        
     }

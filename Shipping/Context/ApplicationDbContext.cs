@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shipping.Entities;
-using ServiceProvider = Shipping.Entities.ServiceProvider;
 
 namespace Shipping.Context
 {
@@ -14,13 +13,15 @@ namespace Shipping.Context
         {
         }
 
-        public DbSet<ServiceProvider> ServiceProviders { get; set; }
+        public DbSet<ServiceProviderEntity> ServiceProviders { get; set; }
         public DbSet<ShippingService> CarrierServices { get; set; }
         public DbSet<Package> Packages { get; set; }
+        public DbSet<UserModel> Users { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ServiceProvider>()
+            modelBuilder.Entity<ServiceProviderEntity>()
                 .HasMany(x => x.ShippingService)
                 .WithOne(x => x.ServiceProvider)
                 .HasForeignKey(x => x.CarrierId);

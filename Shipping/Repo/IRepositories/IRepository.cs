@@ -1,7 +1,7 @@
 ﻿
 using System.Linq.Expressions;
 
-namespace Shipping.repo
+namespace Shipping.repo.IRepositories
 {
     public interface IRepository<TEntity,T> where TEntity : class
     {

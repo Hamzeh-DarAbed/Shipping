@@ -4,7 +4,10 @@ using Shipping.Context;
 using Shipping.Dto;
 using Shipping.repo;
 using Shipping.Entities;
-using ServiceProvider = Shipping.Entities.ServiceProvider;
+
+using Shipping.repo.IRepositories;
+using Shipping.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shipping.Controllers
 {
@@ -12,49 +15,48 @@ namespace Shipping.Controllers
     public class CreateShippingOrderController : Controller
     {
 
-        private readonly IRepository<ServiceProvider, string> _shippingOrderRepository;
-        private readonly IRepository<Package, string> _packageRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateShippingOrderController(IRepository<ServiceProvider, string> shippingOrderRepository, IRepository<Package, string> packageRepository)
+        public CreateShippingOrderController(IUnitOfWork unitOfWork)
         {
-            _shippingOrderRepository = shippingOrderRepository;
-            _packageRepository = packageRepository;
+            _unitOfWork = unitOfWork;
 
         }
 
 
-        [HttpPost]
+        [HttpPost("~/c")]
+        [Authorize(Roles = "admin")]
+
         public IActionResult CreateOrder([FromBody] CreateShippingOrderDto createShippingOrderDto)
         {
             try
             {
 
-                var serviceProvider = _shippingOrderRepository.Get(createShippingOrderDto.CarrierId);
+                ServiceProviderEntity serviceProvider = _unitOfWork.ServiceRepository.Get(createShippingOrderDto.CarrierId);
                 if (serviceProvider == null)
                 {
                     return BadRequest("Carrier not found");
                 }
 
-                var carrierService = serviceProvider.ShippingService.Find(x => x.ShippingServiceId == createShippingOrderDto.ShippingServiceId);
-                
-                    System.Console.WriteLine(carrierService);
+                ShippingService carrierService = serviceProvider.ShippingService.Where(x => x.ShippingServiceId == createShippingOrderDto.ShippingServiceId).First();
 
-                
+
                 if (carrierService == null)
                 {
                     return BadRequest("Carrier service not found");
                 }
 
-                var package = new Entities.Package
+                Package package = new Entities.Package
                 {
                     ShippingServiceId = carrierService.ShippingServiceId,
+                    ShippingService = carrierService,
                     Weight = createShippingOrderDto.Weight,
                     Height = createShippingOrderDto.Height,
                     Width = createShippingOrderDto.Width,
                     Length = createShippingOrderDto.Length
                 };
-
-                _packageRepository.Add(package);
+                _unitOfWork.PackageRepository.Add(package);
+                _unitOfWork.Complete();
 
                 return Ok("shipment has been placed successfully");
             }
